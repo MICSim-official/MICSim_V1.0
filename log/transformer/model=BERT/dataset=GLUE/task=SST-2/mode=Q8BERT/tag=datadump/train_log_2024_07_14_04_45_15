@@ -1,0 +1,337 @@
+load config from['./Accuracy/config/transformer/config_stt2_bert_q8bert_train.ini']
+===============================configurations===============================
+Section Network   
+	 model                : BERT
+	 dataset              : GLUE
+	 data_path            : /home/wangcong/dataset/glue_data
+	 task                 : SST-2
+	 pretrained           : True
+	 model_path           : /home/wangcong/pretrain/huggingface/hub/models--bert-base-uncased/snapshots/models
+Section Quantization
+	 mode                 : Q8BERT
+	 weightprecision      : 6
+	 inputprecision       : 6
+	 biasprecision        : 32
+	 errorprecision       : -1
+	 gradientprecision    : -1
+	 weightsignmapping    : TwosComp
+	 inputsignmapping     : TwosComp
+	 weightmapping        : Sign
+	 inputmapping         : Sign
+	 hardware             : False
+	 dumpaveragevalue     : False
+	 dumpaveragevalue_path : ./log/transformer/SST2/average/
+Section Training  
+	 batch_size           : 32
+	 max_seq_length       : 128
+	 learning_rate        : 2e-5
+	 bn_learning_rate     : 0.1
+	 numepoch             : 12
+	 decreasing_lr        : 9
+	 train_log_interval   : 100
+	 val_log_interval     : 1
+Section Inference 
+	 finetuned            : False
+	 finetuned_model      : /home/wangcong/pretrain/huggingface/hub/models--bert-base-uncased/snapshots/models/SST-2/Q8BERT/test
+Section Path      
+	 log_dir              : ./log/transformer
+	 organize             : Network_model,Network_dataset,Network_task,Quantization_mode
+	 tag                  : datadump
+Section CIM       
+	 arraysize            : 128
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : True
+	 digitref3            : True
+	 withcellvar          : False
+Section Device    
+	 resmap               : ./cell_files/fake_device.csv
+	 gmincancel           : False
+Section Debug     
+	 printlinearerr       : False
+	 printmatmulerr       : False
+Section ADC       
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./ADC_files/Linear_std/test.csv
+	 ref_file             : .ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./ADC_files/Linear/VGG8/basic/bit9.csv
+	 nlinear_file         : ./ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section DMVMCIM   
+	 mixedsignal          : True
+	 arraysize            : 128
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : True
+	 digitref3            : True
+	 withcellvar          : False
+Section DMVMDevice
+	 resmap               : ./cimsim/Component/cell_files/fake_device_test.csv
+	 gmincancel           : False
+Section DMVMADC   
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./cimsim/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./cimsim/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./cimsim/Component/ADC_files/Linear/BERT/bit7.csv
+	 nlinear_file         : ./cimsim/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section NonIdeal  
+	 noiseloc             : None
+	 noisetype            : Gaussian
+	 noisestd             : 10
+	 printstat            : False
+	 weightnoise          : 0.0
+===============================configurations===============================
+BertForSequenceClassification(
+  (bert): BertModel(
+    (embeddings): BertEmbeddings(
+      (word_embeddings): Embedding(30522, 768, padding_idx=0)
+      (position_embeddings): Embedding(512, 768)
+      (token_type_embeddings): Embedding(2, 768)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (encoder): BertEncoder(
+      (layer): ModuleList(
+        (0-11): 12 x BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (query_activation): Q8BERTQuantizer()
+              (key_activation): Q8BERTQuantizer()
+              (value_activation): Q8BERTQuantizer()
+              (prob_activation): Q8BERTQuantizer()
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=768, out_features=3072 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): Q8BERTQuantizer()
+            )
+            (intermediate_act_fn): GELUActivation()
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=3072, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): Q8BERTQuantizer()
+            )
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+    )
+    (pooler): BertPooler(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (activation): Tanh()
+    )
+  )
+  (dropout): Dropout(p=0.1, inplace=False)
+  (classifier): Linear(in_features=768, out_features=2, bias=True)
+)
+Train Epoch: 0 [0/11] Loss: 0.0216 Acc: 0.5000 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0222 Acc: 0.5156 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0192 Acc: 0.5729 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0155 Acc: 0.6250 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0152 Acc: 0.6562 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0200 Acc: 0.6615 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0162 Acc: 0.6830 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0223 Acc: 0.6797 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0127 Acc: 0.7014 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0103 Acc: 0.7125 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0099 Acc: 0.7216 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0132 Acc: 0.7266 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0086 Acc: 0.7380 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0101 Acc: 0.7478 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0077 Acc: 0.7583 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0070 Acc: 0.7676 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0063 Acc: 0.7794 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0093 Acc: 0.7865 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0109 Acc: 0.7895 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0065 Acc: 0.7953 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0058 Acc: 0.8006 lr:0.000020
+Train Epoch: 0 [0/11] Loss: 0.0120 Acc: 0.8011 lr:0.000020
+===================== testing phase =====================
+Eval Epoch: 0 [0/12] Acc: 0.8440 F1 score: 0.8538
+save best performance model to 
+/home/wangcong/pretrain/huggingface/hub/models--bert-base-uncased/snapshots/models/SST-2/Q8BERT/6bit/
+Train Epoch: 1 [1/11] Loss: 0.0062 Acc: 0.9375 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0164 Acc: 0.8438 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0037 Acc: 0.8854 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0068 Acc: 0.8906 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0115 Acc: 0.8812 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0095 Acc: 0.8802 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0076 Acc: 0.8884 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0075 Acc: 0.8867 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0083 Acc: 0.8889 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0078 Acc: 0.8906 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0071 Acc: 0.8920 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0129 Acc: 0.8828 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0072 Acc: 0.8846 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0092 Acc: 0.8884 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0040 Acc: 0.8938 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0040 Acc: 0.8984 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0038 Acc: 0.9026 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0042 Acc: 0.9045 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0106 Acc: 0.9046 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0038 Acc: 0.9078 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0016 Acc: 0.9122 lr:0.000020
+Train Epoch: 1 [1/11] Loss: 0.0048 Acc: 0.9148 lr:0.000020
+===================== testing phase =====================
+Eval Epoch: 1 [1/12] Acc: 0.8670 F1 score: 0.8734
+save best performance model to 
+/home/wangcong/pretrain/huggingface/hub/models--bert-base-uncased/snapshots/models/SST-2/Q8BERT/6bit/
+Train Epoch: 2 [2/11] Loss: 0.0060 Acc: 0.9375 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0137 Acc: 0.8594 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0016 Acc: 0.9062 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0047 Acc: 0.9219 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0045 Acc: 0.9250 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0078 Acc: 0.9167 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0046 Acc: 0.9196 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0043 Acc: 0.9258 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0105 Acc: 0.9167 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0024 Acc: 0.9219 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0078 Acc: 0.9205 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0085 Acc: 0.9167 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0040 Acc: 0.9183 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0064 Acc: 0.9219 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0023 Acc: 0.9271 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0052 Acc: 0.9258 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0046 Acc: 0.9265 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0034 Acc: 0.9271 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0047 Acc: 0.9260 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0028 Acc: 0.9281 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0016 Acc: 0.9315 lr:0.000020
+Train Epoch: 2 [2/11] Loss: 0.0053 Acc: 0.9332 lr:0.000020
+===================== testing phase =====================
+Eval Epoch: 2 [2/12] Acc: 0.8819 F1 score: 0.8886
+save best performance model to 
+/home/wangcong/pretrain/huggingface/hub/models--bert-base-uncased/snapshots/models/SST-2/Q8BERT/6bit/
+Train Epoch: 3 [3/11] Loss: 0.0036 Acc: 0.9688 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0065 Acc: 0.9375 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0028 Acc: 0.9479 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0022 Acc: 0.9531 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0056 Acc: 0.9500 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0079 Acc: 0.9375 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0047 Acc: 0.9375 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0038 Acc: 0.9336 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0054 Acc: 0.9306 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0031 Acc: 0.9281 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0033 Acc: 0.9290 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0078 Acc: 0.9271 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0021 Acc: 0.9303 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0019 Acc: 0.9330 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0035 Acc: 0.9333 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0005 Acc: 0.9375 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0009 Acc: 0.9412 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0027 Acc: 0.9444 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0045 Acc: 0.9441 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0009 Acc: 0.9469 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0004 Acc: 0.9494 lr:0.000020
+Train Epoch: 3 [3/11] Loss: 0.0048 Acc: 0.9489 lr:0.000020
+===================== testing phase =====================
+Eval Epoch: 3 [3/12] Acc: 0.8750 F1 score: 0.8777
+Train Epoch: 4 [4/11] Loss: 0.0037 Acc: 0.9688 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0036 Acc: 0.9531 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0005 Acc: 0.9688 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0032 Acc: 0.9609 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0019 Acc: 0.9625 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0049 Acc: 0.9531 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0020 Acc: 0.9598 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0028 Acc: 0.9609 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0019 Acc: 0.9653 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0012 Acc: 0.9688 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0030 Acc: 0.9659 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0045 Acc: 0.9609 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0017 Acc: 0.9615 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0017 Acc: 0.9621 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0039 Acc: 0.9604 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0025 Acc: 0.9609 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0057 Acc: 0.9596 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0033 Acc: 0.9583 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0058 Acc: 0.9556 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0003 Acc: 0.9578 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0004 Acc: 0.9598 lr:0.000020
+Train Epoch: 4 [4/11] Loss: 0.0031 Acc: 0.9602 lr:0.000020
+===================== testing phase =====================
+Eval Epoch: 4 [4/12] Acc: 0.8773 F1 score: 0.8838
+Train Epoch: 5 [5/11] Loss: 0.0005 Acc: 1.0000 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0040 Acc: 0.9688 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0005 Acc: 0.9792 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0031 Acc: 0.9766 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0067 Acc: 0.9688 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0048 Acc: 0.9583 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0030 Acc: 0.9598 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0048 Acc: 0.9609 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0021 Acc: 0.9618 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0043 Acc: 0.9563 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0043 Acc: 0.9545 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0079 Acc: 0.9531 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0009 Acc: 0.9567 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0015 Acc: 0.9576 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0026 Acc: 0.9583 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0005 Acc: 0.9609 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0003 Acc: 0.9632 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0011 Acc: 0.9653 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0021 Acc: 0.9655 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0003 Acc: 0.9672 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0012 Acc: 0.9673 lr:0.000020
+Train Epoch: 5 [5/11] Loss: 0.0017 Acc: 0.9688 lr:0.000020
+===================== testing phase =====================
+Eval Epoch: 5 [5/12] Acc: 0.8773 F1 score: 0.8841
+Train Epoch: 6 [6/11] Loss: 0.0037 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0036 Acc: 0.9531 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0006 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0041 Acc: 0.9609 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0007 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0061 Acc: 0.9635 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0013 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0027 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0025 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0019 Acc: 0.9719 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0055 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0020 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0071 Acc: 0.9663 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0009 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0027 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0017 Acc: 0.9688 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0006 Acc: 0.9706 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0020 Acc: 0.9722 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0024 Acc: 0.9704 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0002 Acc: 0.9719 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0002 Acc: 0.9732 lr:0.000020
+Train Epoch: 6 [6/11] Loss: 0.0018 Acc: 0.9730 lr:0.000020
+===================== testing phase =====================
+Eval Epoch: 6 [6/12] Acc: 0.8750 F1 score: 0.8827
+Train Epoch: 7 [7/11] Loss: 0.0002 Acc: 1.0000 lr:0.000020
+Train Epoch: 7 [7/11] Loss: 0.0017 Acc: 0.9844 lr:0.000020
+Train Epoch: 7 [7/11] Loss: 0.0001 Acc: 0.9896 lr:0.000020
+Train Epoch: 7 [7/11] Loss: 0.0045 Acc: 0.9766 lr:0.000020

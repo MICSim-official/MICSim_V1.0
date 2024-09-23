@@ -1,0 +1,186 @@
+load config from['./Accuracy/config/transformer/config_stt2_bert_q8bert_infer.ini']
+===============================configurations===============================
+Section Network   
+	 model                : BERT
+	 dataset              : GLUE
+	 data_path            : /home/wangcong/dataset/glue_data
+	 task                 : SST-2
+	 pretrained           : True
+	 model_path           : /home/wangcong/pretrain/huggingface/hub/models--bert-base-uncased/snapshots/models
+Section Quantization
+	 mode                 : Q8BERT
+	 embedding            : True
+	 weightprecision      : 8
+	 inputprecision       : 8
+	 biasprecision        : 32
+	 errorprecision       : -1
+	 gradientprecision    : -1
+	 weightsignmapping    : TwosComp
+	 inputsignmapping     : TwosComp
+	 weightmapping        : Unsign
+	 inputmapping         : Sign
+	 hardware             : True
+	 dumpaveragevalue     : False
+	 dumpaveragevalue_path : ./average_files/q8bert/4bit/
+Section Training  
+	 batch_size           : 32
+	 max_seq_length       : 128
+	 learning_rate        : 2e-5
+	 bn_learning_rate     : 0.1
+	 numepoch             : 5
+	 decreasing_lr        : 1
+	 train_log_interval   : 100
+	 val_log_interval     : 1
+Section Inference 
+	 finetuned            : True
+	 finetuned_model      : /home/wangcong/pretrain/huggingface/hub/models--bert-base-uncased/snapshots/models/SST-2/Q8BERT/test_0709
+Section Path      
+	 log_dir              : ./log/transformer
+	 organize             : Network_model,Network_dataset,Network_task,Quantization_mode
+	 tag                  : datadump
+Section Debug     
+	 printlinearerr       : False
+	 printmatmulerr       : False
+Section CIM       
+	 arraysize            : 128
+	 cellprecision        : 4
+	 cycleprecision       : 1
+	 digitref2            : False
+	 digitref3            : False
+	 withcellvar          : False
+Section Device    
+	 resmap               : ./Accuracy/src/Component/cell_files/fake_device_ronoff.csv
+	 gmincancel           : False
+Section ADC       
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/BERT/Q8BERT/w4in1/Case3/bit10.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section DMVMCIM   
+	 mixedsignal          : False
+Section DMVMKQCIM 
+	 arraysize            : 64
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : True
+	 digitref3            : True
+	 withcellvar          : False
+Section DMVMKQDevice
+	 resmap               : ./Accuracy/src/Component/cell_files/fake_device_ronoff.csv
+	 gmincancel           : False
+Section DMVMKQADC 
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/BERT/Q8BERT/w2in1/Case2/bit7.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section DMVMPVCIM 
+	 arraysize            : 128
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : True
+	 digitref3            : True
+	 withcellvar          : False
+Section DMVMPVDevice
+	 resmap               : ./Accuracy/src/Component/cell_files/fake_device_ronoff.csv
+	 gmincancel           : False
+Section DMVMPVADC 
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/BERT/Q8BERT/w2in1/Case2/bit7.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section NonIdeal  
+	 noiseloc             : None
+	 noisetype            : Gaussian
+	 noisestd             : 10
+	 printstat            : False
+	 weightnoise          : 0.0
+===============================configurations===============================
+BertForSequenceClassification(
+  (bert): BertModel(
+    (embeddings): BertEmbeddings(
+      (word_embeddings): Embedding(30522, 768, padding_idx=0)
+      (position_embeddings): Embedding(512, 768)
+      (token_type_embeddings): Embedding(2, 768)
+      (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (encoder): BertEncoder(
+      (layer): ModuleList(
+        (0-11): 12 x BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (query_activation): Q8BERTQuantizer()
+              (key_activation): Q8BERTQuantizer()
+              (value_activation): Q8BERTQuantizer()
+              (prob_activation): Q8BERTQuantizer()
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=768, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): Q8BERTQuantizer()
+              )
+              (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=768, out_features=3072 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): Q8BERTQuantizer()
+            )
+            (intermediate_act_fn): GELUActivation()
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=3072, out_features=768 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): Q8BERTQuantizer()
+            )
+            (LayerNorm): LayerNorm((768,), eps=1e-12, elementwise_affine=True)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+        )
+      )
+    )
+    (pooler): BertPooler(
+      (dense): Linear(in_features=768, out_features=768, bias=True)
+      (activation): Tanh()
+    )
+  )
+  (dropout): Dropout(p=0.1, inplace=False)
+  (classifier): Linear(in_features=768, out_features=2, bias=True)
+)
+start time: 2024_07_16_09_29_07
+===================== testing phase =====================
+Test result: Acc: 49.8853% F1 score: 0.560804
+finish time: 2024_07_16_09_30_35

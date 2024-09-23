@@ -1,0 +1,124 @@
+load config from['./Accuracy/config/vgg8/config_vgg_lsq_infer.ini']
+===============================configurations===============================
+Section Network   
+	 model                : VGG8
+	 dataset              : Cifar10
+	 numclass             : 10
+Section Quantization
+	 mode                 : LSQ
+	 weightprecision      : 3
+	 inputprecision       : 3
+	 errorprecision       : -1
+	 gradientprecision    : -1
+	 weightsignmapping    : TwosComp
+	 inputsignmapping     : TwosComp
+	 weightmapping        : Sign
+	 inputmapping         : Sign
+	 hardware             : True
+	 dumpaveragevalue     : False
+	 dumpaveragevalue_path : ./average_files/LSQ3/CASE1/
+Section Training  
+	 lossfunc             : CrossEntropy
+	 optimizer            : SGD
+	 batch_size           : 128
+	 learning_rate        : 0.01
+	 bn_learning_rate     : 0.1
+	 numepoch             : 100
+	 decreasing_lr        : 50, 80
+	 momentum             : 0.9
+	 train_log_interval   : 100
+	 val_log_interval     : 1
+Section Inference 
+	 pretrained           : True
+	 savedmodel           : ./saved_model/VGG8-LSQ-3bit.pth
+Section Path      
+	 log_dir              : ./log/noise
+	 organize             : Network_model,Network_dataset,Quantization_mode,Training_lossFunc,Quantization_weightprecision,Quantization_inputprecision,Quantization_gradientPrecision,Quantization_errorprecision,Quantization_weightmapping,Quantization_inputmapping,Quantization_weightsignmapping,Quantization_inputsignmapping,ADC_mode,ADC_nlineartype
+	 tag                  : datadump
+Section System    
+	 gpu                  : 0
+Section CIM       
+	 arraysize            : 128
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : False
+	 digitref3            : False
+	 withcellvar          : False
+Section Device    
+	 resmap               : ./Accuracy/src/Component/cell_files/fake_device_ronoff.csv
+	 gmincancel           : False
+Section ADC       
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/VGG8/wage/w1in1/TwosComp/bit7.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section NonIdeal  
+	 noiseloc             : None
+	 noisetype            : Gaussian
+	 noisestd             : 10
+	 printstat            : False
+	 weightnoise          : 0.0
+===============================configurations===============================
+VGG8(
+  (features): Sequential(
+    (0): QConv2d(
+      kernel_size=(3, 3), in_channels=3, out_channels=128, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=False, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+    (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): QConv2d(
+      kernel_size=(3, 3), in_channels=128, out_channels=128, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+    (4): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (5): ReLU(inplace=True)
+    (6): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (7): QConv2d(
+      kernel_size=(3, 3), in_channels=128, out_channels=256, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+    (8): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (9): ReLU(inplace=True)
+    (10): QConv2d(
+      kernel_size=(3, 3), in_channels=256, out_channels=256, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+    (11): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (12): ReLU(inplace=True)
+    (13): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+    (14): QConv2d(
+      kernel_size=(3, 3), in_channels=256, out_channels=512, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+    (15): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (16): ReLU(inplace=True)
+    (17): QConv2d(
+      kernel_size=(3, 3), in_channels=512, out_channels=512, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+    (18): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (19): ReLU(inplace=True)
+    (20): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (classifier): Sequential(
+    (0): QLinear(
+      in_features=8192, out_features=1024 bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+    (1): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (2): ReLU(inplace=True)
+    (3): QLinear(
+      in_features=1024, out_features=10 bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+      (quantizer): LSQuantizer()
+    )
+  )
+)
+start time: 2024_09_13_06_46_30
+===================== testing phase =====================

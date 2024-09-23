@@ -1,0 +1,67 @@
+load config from['./Accuracy/config/vgg8/config_vgg_lsq_infer.ini']
+===============================configurations===============================
+Section Network   
+	 model                : VGG8
+	 dataset              : Cifar10
+	 numclass             : 10
+Section Quantization
+	 mode                 : LSQ
+	 weightprecision      : 3
+	 inputprecision       : 3
+	 errorprecision       : -1
+	 gradientprecision    : -1
+	 weightsignmapping    : TwosComp
+	 inputsignmapping     : TwosComp
+	 weightmapping        : Sign
+	 inputmapping         : Sign
+	 hardware             : True
+	 dumpaveragevalue     : False
+	 dumpaveragevalue_path : ./average_files/LSQ3/CASE1/
+Section Training  
+	 lossfunc             : CrossEntropy
+	 optimizer            : SGD
+	 batch_size           : 128
+	 learning_rate        : 0.01
+	 bn_learning_rate     : 0.1
+	 numepoch             : 100
+	 decreasing_lr        : 50, 80
+	 momentum             : 0.9
+	 train_log_interval   : 100
+	 val_log_interval     : 1
+Section Inference 
+	 pretrained           : True
+	 savedmodel           : ./saved_model/VGG8-LSQ-3bit.pth
+Section Path      
+	 log_dir              : ./log/noise
+	 organize             : Network_model,Network_dataset,Quantization_mode,Training_lossFunc,Quantization_weightprecision,Quantization_inputprecision,Quantization_gradientPrecision,Quantization_errorprecision,Quantization_weightmapping,Quantization_inputmapping,Quantization_weightsignmapping,Quantization_inputsignmapping,ADC_mode,ADC_nlineartype
+	 tag                  : datadump
+Section System    
+	 gpu                  : 0
+Section CIM       
+	 arraysize            : 128
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : False
+	 digitref3            : False
+	 withcellvar          : False
+Section Device    
+	 resmap               : ./Accuracy/src/Component/cell_files/fake_device_ronoff.csv
+	 gmincancel           : False
+Section ADC       
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/VGG8/wage/w1in1/TwosComp/bit7.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section NonIdeal  
+	 noiseloc             : None
+	 noisetype            : Gaussian
+	 noisestd             : 10
+	 printstat            : False
+	 weightnoise          : 0.0
+===============================configurations===============================

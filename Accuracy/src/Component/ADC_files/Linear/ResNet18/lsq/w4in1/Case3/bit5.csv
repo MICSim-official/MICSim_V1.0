@@ -1,0 +1,21 @@
+"layer1",0,248,8,0,248,8
+"group1_block1_conv1",0,248,8,0,248,8
+"group1_block1_conv2",0,248,8,0,248,8
+"group1_block2_conv1",0,248,8,0,248,8
+"group1_block2_conv2",0,248,8,0,248,8
+"group2_bypass",      0,248,8,0,248,8
+"group2_block1_conv1",0,248,8,0,248,8
+"group2_block1_conv2",0,248,8,0,248,8
+"group2_block2_conv1",0,248,8,0,248,8
+"group2_block2_conv2",0,248,8,0,248,8
+"group3_bypass",      0,248,8,0,248,8
+"group3_block1_conv1",0,248,8,0,248,8
+"group3_block1_conv2",0,248,8,0,248,8
+"group3_block2_conv1",0,248,8,0,248,8
+"group3_block2_conv2",0,248,8,0,248,8
+"group4_bypass",      0,248,8,0,248,8
+"group4_block1_conv1",0,248,8,0,248,8
+"group4_block1_conv2",0,248,8,0,248,8
+"group4_block2_conv1",0,248,8,0,248,8
+"group4_block2_conv2",0,248,8,0,248,8
+"last_layer",            0,248,8,0,248,8

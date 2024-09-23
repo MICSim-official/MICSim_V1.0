@@ -1,0 +1,216 @@
+load config from['./Accuracy/config/resnet18/config_resnet18_df_infer.ini']
+===============================configurations===============================
+Section Network   
+	 model                : ResNet18
+	 dataset              : ImageNetPartial
+	 numclass             : 50
+Section Quantization
+	 mode                 : DynamicFixedPoint
+	 weightprecision      : 5
+	 inputprecision       : 5
+	 errorprecision       : -1
+	 gradientprecision    : -1
+	 weightsignmapping    : TwosComp
+	 inputsignmapping     : TwosComp
+	 weightmapping        : Sign
+	 inputmapping         : Sign
+	 hardware             : True
+	 dumpaveragevalue     : False
+	 dumpaveragevalue_path : ./average_files/ResNet18/DF5/CASE1/
+Section Training  
+	 lossfunc             : CrossEntropy
+	 optimizer            : QSGD
+	 batch_size           : 128
+	 learning_rate        : 0.1
+	 bn_learning_rate     : 0.1
+	 numepoch             : 100
+	 decreasing_lr        : 50, 80
+	 momentum             : 0.9
+	 train_log_interval   : 100
+	 val_log_interval     : 1
+Section Inference 
+	 pretrained           : True
+	 savedmodel           : ./saved_model/Resnet-DF-5bit.pth
+Section Path      
+	 log_dir              : ./log/noise
+	 organize             : Network_model,Network_dataset,Quantization_mode,Training_lossFunc,Quantization_weightprecision,Quantization_inputprecision,Quantization_gradientPrecision,Quantization_errorprecision,Quantization_weightmapping,Quantization_inputmapping,Quantization_weightsignmapping,Quantization_inputsignmapping,ADC_mode,ADC_nlineartype
+	 tag                  : datadump
+Section System    
+	 gpu                  : 0
+Section CIM       
+	 arraysize            : 128
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : False
+	 digitref3            : False
+	 withcellvar          : False
+Section Device    
+	 resmap               : ./Accuracy/src/Component/cell_files/RRAM1.csv
+	 gmincancel           : True
+Section ADC       
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : collected_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/ResNet18/lsq/w4in1/Case3/bit8.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear/VGG8/WAGE/8/8/Sign/Sign/TwosComp/TwosComp/1/1/128/KMEANS/level_4_old.csv
+	 nlineartype          : KMEANS
+Section NonIdeal  
+	 noiseloc             : None
+	 noisetype            : Gaussian
+	 noisestd             : 10
+	 printstat            : False
+	 weightnoise          : 0.0
+===============================configurations===============================
+ResNet(
+  (conv1): QConv2d(
+    kernel_size=(7, 7), in_channels=3, out_channels=64, stride=(2, 2), bias=False, quantize_weight=True, quantize_input=False, quantize_error=False
+    (quantizer): DFQuantizer()
+  )
+  (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU(inplace=True)
+  (maxpool): MaxPool2d(kernel_size=3, stride=2, padding=1, dilation=1, ceil_mode=False)
+  (layer1): Sequential(
+    (0): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=64, out_channels=64, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=64, out_channels=64, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    )
+    (1): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=64, out_channels=64, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=64, out_channels=64, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    )
+  )
+  (layer2): Sequential(
+    (0): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=64, out_channels=128, stride=(2, 2), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=128, out_channels=128, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (downsample): Sequential(
+        (0): QConv2d(
+          kernel_size=(1, 1), in_channels=64, out_channels=128, stride=(2, 2), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+          (quantizer): DFQuantizer()
+        )
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=128, out_channels=128, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=128, out_channels=128, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    )
+  )
+  (layer3): Sequential(
+    (0): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=128, out_channels=256, stride=(2, 2), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=256, out_channels=256, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (downsample): Sequential(
+        (0): QConv2d(
+          kernel_size=(1, 1), in_channels=128, out_channels=256, stride=(2, 2), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+          (quantizer): DFQuantizer()
+        )
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=256, out_channels=256, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=256, out_channels=256, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    )
+  )
+  (layer4): Sequential(
+    (0): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=256, out_channels=512, stride=(2, 2), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=512, out_channels=512, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (downsample): Sequential(
+        (0): QConv2d(
+          kernel_size=(1, 1), in_channels=256, out_channels=512, stride=(2, 2), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+          (quantizer): DFQuantizer()
+        )
+        (1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+    )
+    (1): BasicBlock(
+      (conv1): QConv2d(
+        kernel_size=(3, 3), in_channels=512, out_channels=512, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn1): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): QConv2d(
+        kernel_size=(3, 3), in_channels=512, out_channels=512, stride=(1, 1), bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+        (quantizer): DFQuantizer()
+      )
+      (bn2): BatchNorm2d(512, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    )
+  )
+  (avgpool): AdaptiveAvgPool2d(output_size=(1, 1))
+  (fc): QLinear(
+    in_features=512, out_features=50 bias=False, quantize_weight=True, quantize_input=True, quantize_error=False
+    (quantizer): DFQuantizer()
+  )
+)
+start time: 2024_08_29_03_38_11
+===================== testing phase =====================

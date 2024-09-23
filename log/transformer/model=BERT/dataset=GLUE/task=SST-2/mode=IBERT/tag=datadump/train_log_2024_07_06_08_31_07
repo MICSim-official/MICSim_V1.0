@@ -1,0 +1,1591 @@
+load config from['./Accuracy/config/transformer/config_stt2_bert(large)_ibert_infer.ini']
+===============================configurations===============================
+Section Network   
+	 model                : BERT
+	 dataset              : GLUE
+	 data_path            : /home/wangcong/dataset/glue_data
+	 task                 : SST-2
+	 pretrained           : True
+	 model_path           : /home/wangcong/pretrain/huggingface/hub/models--bert-large-uncased/snapshots/models
+Section Quantization
+	 mode                 : IBERT
+	 embedding            : True
+	 weightprecision      : 8
+	 inputprecision       : 8
+	 biasprecision        : 32
+	 errorprecision       : -1
+	 gradientprecision    : -1
+	 weightsignmapping    : NPsplit
+	 inputsignmapping     : TwosComp
+	 weightmapping        : Sign
+	 inputmapping         : Sign
+	 hardware             : False
+	 dumpaveragevalue     : False
+	 dumpaveragevalue_path : ./bert_avg/STT2/CASE2_RRAM1/
+Section Training  
+	 batch_size           : 16
+	 max_seq_length       : 128
+	 learning_rate        : 2e-5
+	 bn_learning_rate     : 0.1
+	 numepoch             : 5
+	 decreasing_lr        : 1
+	 train_log_interval   : 100
+	 val_log_interval     : 1
+Section Inference 
+	 finetuned            : True
+	 finetuned_model      : /home/wangcong/pretrain/huggingface/hub/models--bert-large-uncased/snapshots/models/SST-2/IBERT/
+Section Path      
+	 log_dir              : ./log/transformer
+	 organize             : Network_model,Network_dataset,Network_task,Quantization_mode
+	 tag                  : datadump
+Section Debug     
+	 printlinearerr       : False
+	 printmatmulerr       : False
+Section CIM       
+	 arraysize            : 128
+	 cellprecision        : 2
+	 cycleprecision       : 1
+	 digitref2            : False
+	 digitref3            : False
+	 withcellvar          : False
+Section Device    
+	 resmap               : ./Accuracy/src/Component/cell_files/RRAM1.csv
+	 gmincancel           : False
+Section ADC       
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/BERT/w2in1/Case2/bit7.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section DMVMCIM   
+	 mixedsignal          : False
+Section DMVMKQCIM 
+	 arraysize            : 64
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : True
+	 digitref3            : True
+	 withcellvar          : False
+Section DMVMKQDevice
+	 resmap               : ./Accuracy/src/Component/cell_files/fake_device_ronoff.csv
+	 gmincancel           : False
+Section DMVMKQADC 
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/BERT/w2in1/Case2/bit7.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section DMVMPVCIM 
+	 arraysize            : 128
+	 cellprecision        : 1
+	 cycleprecision       : 1
+	 digitref2            : True
+	 digitref3            : True
+	 withcellvar          : False
+Section DMVMPVDevice
+	 resmap               : ./Accuracy/src/Component/cell_files/fake_device_ronoff.csv
+	 gmincancel           : False
+Section DMVMPVADC 
+	 mode                 : Linear
+	 type                 : SAR
+	 share                : 8
+	 dumpdata             : False
+	 dumpdatapath         : dumped_data
+	 std_file             : ./Accuracy/src/Component/ADC_files/Linear_std/test.csv
+	 ref_file             : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 linear_file          : ./Accuracy/src/Component/ADC_files/Linear/BERT/w2in1/Case2/bit7.csv
+	 nlinear_file         : ./Accuracy/src/Component/ADC_files/NLinear_levels/test.csv
+	 nlineartype          : KMEANS
+Section NonIdeal  
+	 noiseloc             : None
+	 noisetype            : Gaussian
+	 noisestd             : 10
+	 printstat            : False
+	 weightnoise          : 0.0
+===============================configurations===============================
+BertForSequenceClassification(
+  (bert): BertModel(
+    (embeddings): BertEmbeddings(
+      (word_embeddings): QEmbedding(
+        (Quantizer): IBERTQuantizer()
+      )
+      (token_type_embeddings): QEmbedding(
+        (Quantizer): IBERTQuantizer()
+      )
+      (position_embeddings): QEmbedding(
+        (Quantizer): IBERTQuantizer()
+      )
+      (embeddings_act1): QuantAct(activation_bit=16, quant_mode: True, Act_min: -1.28, Act_max: 1.87)
+      (embeddings_act2): QuantAct(activation_bit=16, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+      (LayerNorm): IntLayerNorm(
+        (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+      )
+      (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.40, Act_max: 6.16)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (encoder): BertEncoder(
+      (layer): ModuleList(
+        (0): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.96, Act_max: 9.42)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.52, Act_max: 7.35)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.27, Act_max: 3.42)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.21, Act_max: 2.11)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 9754395.00, Act_max: 10473701879316480.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -4.73, Act_max: 25.29)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -17.98, Act_max: 108.69)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.21, Act_max: 35.29)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -45.08, Act_max: 228.38)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.03, Act_max: 12.40)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -17.95, Act_max: 108.08)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.28, Act_max: 33.66)
+        )
+        (1): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.79, Act_max: 6.61)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -9.58, Act_max: 9.01)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.13, Act_max: 4.48)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.78, Act_max: 2.65)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 10947133.00, Act_max: 11754394554990592.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -5.05, Act_max: 22.49)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -9.02, Act_max: 90.19)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 10.15)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -12.97, Act_max: 102.67)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.24, Act_max: 13.15)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -9.05, Act_max: 90.09)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.16, Act_max: 10.04)
+        )
+        (2): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.07, Act_max: 8.38)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.78, Act_max: 8.20)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.32, Act_max: 3.61)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.71, Act_max: 1.81)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 8745731.00, Act_max: 9390657156153344.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -4.70, Act_max: 14.95)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.34, Act_max: 87.00)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 6.48)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -12.30, Act_max: 87.00)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.74, Act_max: 13.56)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.33, Act_max: 86.83)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.15, Act_max: 6.36)
+        )
+        (3): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.49, Act_max: 8.28)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.92, Act_max: 9.17)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.28, Act_max: 3.29)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.70, Act_max: 1.68)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 7673369.00, Act_max: 8239238164250624.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -3.80, Act_max: 14.42)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.78, Act_max: 78.53)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 6.91)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -8.55, Act_max: 77.57)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.75, Act_max: 10.50)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.75, Act_max: 78.38)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.16, Act_max: 6.79)
+        )
+        (4): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.20, Act_max: 8.02)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.23, Act_max: 8.18)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.10, Act_max: 3.21)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.44, Act_max: 1.55)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 10117884.00, Act_max: 10863995221180416.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -3.81, Act_max: 10.52)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.62, Act_max: 76.44)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 14.12)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -7.28, Act_max: 113.57)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.02, Act_max: 8.50)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.64, Act_max: 76.22)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.22, Act_max: 13.99)
+        )
+        (5): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.80, Act_max: 6.78)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.24, Act_max: 5.33)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.53, Act_max: 3.71)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.66, Act_max: 1.78)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 26672236.00, Act_max: 28639095332798464.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -4.08, Act_max: 9.33)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -9.25, Act_max: 67.52)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 9.21)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -11.45, Act_max: 119.14)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.32, Act_max: 8.16)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -9.28, Act_max: 67.08)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.14, Act_max: 8.96)
+        )
+        (6): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.66, Act_max: 7.26)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.00, Act_max: 5.83)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.54, Act_max: 3.67)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.42, Act_max: 1.38)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 21984076.00, Act_max: 23605221863194624.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -5.49, Act_max: 8.55)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -27.80, Act_max: 84.98)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 9.13)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -41.35, Act_max: 168.33)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -15.99, Act_max: 4.39)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -27.79, Act_max: 84.55)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.15, Act_max: 8.98)
+        )
+        (7): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.35, Act_max: 6.82)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.08, Act_max: 6.64)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.56, Act_max: 3.63)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.52, Act_max: 1.60)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 19019502.00, Act_max: 20422034769051648.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -15.97, Act_max: 4.43)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -67.44, Act_max: 33.84)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 18.85)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -83.10, Act_max: 82.13)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -13.43, Act_max: 5.93)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -67.28, Act_max: 33.84)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.15, Act_max: 18.06)
+        )
+        (8): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.60, Act_max: 6.81)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.73, Act_max: 6.44)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.52, Act_max: 3.82)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.74, Act_max: 1.82)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 17584512.00, Act_max: 18881225989029888.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -15.85, Act_max: 6.11)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -72.99, Act_max: 24.41)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 11.81)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -78.10, Act_max: 59.82)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -16.06, Act_max: 10.73)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -72.88, Act_max: 24.41)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.19, Act_max: 11.46)
+        )
+        (9): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -9.30, Act_max: 9.31)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -10.00, Act_max: 9.44)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.36, Act_max: 3.51)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.22, Act_max: 1.77)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 5230336.00, Act_max: 5616118563602432.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -18.01, Act_max: 10.87)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -69.38, Act_max: 40.09)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 10.55)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -70.86, Act_max: 70.63)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -15.73, Act_max: 13.56)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -69.36, Act_max: 40.09)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 10.16)
+        )
+        (10): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.12, Act_max: 8.02)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.33, Act_max: 7.58)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.59, Act_max: 3.56)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.78, Act_max: 1.77)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 11959696.00, Act_max: 12841956510007296.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -16.71, Act_max: 13.70)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -55.82, Act_max: 61.76)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 11.55)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -55.02, Act_max: 139.35)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -18.62, Act_max: 13.23)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -55.81, Act_max: 61.03)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.18, Act_max: 11.17)
+        )
+        (11): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.54, Act_max: 6.45)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.59, Act_max: 5.52)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.56, Act_max: 3.54)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.93, Act_max: 1.76)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 34547880.00, Act_max: 37095503686533120.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -19.63, Act_max: 13.35)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -50.70, Act_max: 77.48)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.18, Act_max: 13.26)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -49.89, Act_max: 152.38)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -18.29, Act_max: 11.98)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -50.68, Act_max: 77.14)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.21, Act_max: 12.84)
+        )
+        (12): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.50, Act_max: 6.58)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.67, Act_max: 6.93)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.28, Act_max: 4.03)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.09, Act_max: 2.08)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 21113018.00, Act_max: 22669930457464832.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -18.71, Act_max: 12.18)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -46.94, Act_max: 75.36)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.22, Act_max: 9.11)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -47.64, Act_max: 164.46)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -17.02, Act_max: 13.52)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -46.93, Act_max: 75.00)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.22, Act_max: 8.93)
+        )
+        (13): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.33, Act_max: 6.21)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.65, Act_max: 5.82)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.52, Act_max: 3.64)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.99, Act_max: 2.05)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 33441794.00, Act_max: 35907852887392256.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -17.31, Act_max: 13.56)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -40.50, Act_max: 78.62)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 8.33)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -61.52, Act_max: 141.91)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -13.40, Act_max: 12.53)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -40.51, Act_max: 78.34)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.20, Act_max: 8.25)
+        )
+        (14): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.76, Act_max: 7.15)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.61, Act_max: 5.44)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.22, Act_max: 4.02)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.69, Act_max: 2.24)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 28981348.00, Act_max: 31118485463498752.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -15.58, Act_max: 12.78)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -32.73, Act_max: 71.63)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 9.22)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -48.54, Act_max: 110.85)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -13.18, Act_max: 10.72)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -32.71, Act_max: 71.34)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.14, Act_max: 9.07)
+        )
+        (15): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.53, Act_max: 7.48)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.15, Act_max: 6.21)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.93, Act_max: 3.63)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.80, Act_max: 1.83)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 21501544.00, Act_max: 23087107073376256.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -14.63, Act_max: 10.69)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -55.40, Act_max: 51.79)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 10.81)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -92.82, Act_max: 75.34)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -14.76, Act_max: 8.94)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -55.24, Act_max: 51.82)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 10.73)
+        )
+        (16): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.42, Act_max: 7.14)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.16, Act_max: 6.03)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.66, Act_max: 4.48)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.35, Act_max: 2.13)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 22476388.00, Act_max: 24133837848051712.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -16.54, Act_max: 8.89)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -66.60, Act_max: 29.51)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 9.74)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -83.61, Act_max: 28.67)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -12.98, Act_max: 7.79)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -66.58, Act_max: 29.50)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.15, Act_max: 9.20)
+        )
+        (17): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.80, Act_max: 6.93)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -6.35, Act_max: 6.19)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.77, Act_max: 4.18)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.28, Act_max: 2.94)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 18774110.00, Act_max: 20158547115376640.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -13.22, Act_max: 7.72)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -56.79, Act_max: 15.85)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.18, Act_max: 69.06)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -986.86, Act_max: 299.11)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -12.24, Act_max: 7.44)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -56.70, Act_max: 15.82)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.00, Act_max: 66.84)
+        )
+        (18): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.33, Act_max: 8.73)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.10, Act_max: 7.06)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.72, Act_max: 3.94)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.05, Act_max: 2.05)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 11731405.00, Act_max: 12596500202782720.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -12.85, Act_max: 7.41)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -55.49, Act_max: 28.67)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.10, Act_max: 56.99)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -734.74, Act_max: 148.53)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -10.36, Act_max: 6.72)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -55.32, Act_max: 28.66)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.99, Act_max: 55.39)
+        )
+        (19): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.58, Act_max: 9.12)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -7.42, Act_max: 8.36)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.88, Act_max: 4.16)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.53, Act_max: 2.41)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 7865715.00, Act_max: 8445747171164160.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -13.21, Act_max: 8.00)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -90.27, Act_max: 36.46)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.22, Act_max: 19.71)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -276.23, Act_max: 94.65)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.39, Act_max: 15.85)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -89.87, Act_max: 36.54)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.19, Act_max: 18.89)
+        )
+        (20): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.80, Act_max: 9.48)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -8.23, Act_max: 7.72)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.42, Act_max: 4.19)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.08, Act_max: 2.50)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 7443875.00, Act_max: 7992807436320768.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -10.91, Act_max: 19.96)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -79.97, Act_max: 38.35)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.32, Act_max: 11.68)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -131.57, Act_max: 78.64)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.52, Act_max: 17.35)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -79.97, Act_max: 38.32)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.32, Act_max: 9.23)
+        )
+        (21): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -10.20, Act_max: 11.95)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -12.68, Act_max: 10.77)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.75, Act_max: 4.47)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.42, Act_max: 3.54)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 2122842.00, Act_max: 2279384241143808.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -10.31, Act_max: 20.81)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -53.03, Act_max: 43.59)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.36, Act_max: 31.62)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -287.14, Act_max: 280.95)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.21, Act_max: 18.59)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -52.69, Act_max: 43.58)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.37, Act_max: 23.65)
+        )
+        (22): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -9.42, Act_max: 10.66)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -11.42, Act_max: 10.83)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.88, Act_max: 3.00)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -1.53, Act_max: 1.74)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 3174760.00, Act_max: 3408872593162240.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -5.11, Act_max: 20.04)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -25.34, Act_max: 43.06)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.65, Act_max: 8.66)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -1326.84, Act_max: 1338.74)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -4.20, Act_max: 25.12)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -25.36, Act_max: 42.86)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.65, Act_max: 7.42)
+        )
+        (23): BertLayer(
+          (attention): BertAttention(
+            (self): BertSelfAttention(
+              (query): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (key): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (value): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (query_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -10.72, Act_max: 12.34)
+              (key_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -12.51, Act_max: 10.59)
+              (value_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.98, Act_max: 4.01)
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -2.64, Act_max: 3.32)
+              (softmax): IntSoftmax(
+                (act): QuantAct(activation_bit=16, quant_mode: True, Act_min: 2186331.50, Act_max: 2347555572678656.00)
+              )
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+            (output): BertSelfOutput(
+              (dense): QLinear(
+                in_features=1024, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+                (quantizer): IBERTQuantizer()
+              )
+              (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -6.61, Act_max: 28.79)
+              (LayerNorm): IntLayerNorm(
+                (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+              )
+              (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.46, Act_max: 47.03)
+              (dropout): Dropout(p=0.1, inplace=False)
+            )
+          )
+          (intermediate): BertIntermediate(
+            (dense): QLinear(
+              in_features=1024, out_features=4096 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (intermediate_act_fn): IntGELU()
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.17, Act_max: 5.67)
+          )
+          (output): BertOutput(
+            (dense): QLinear(
+              in_features=4096, out_features=1024 bias=True, quantize_weight=True, quantize_input=True, quantize_error=False
+              (quantizer): IBERTQuantizer()
+            )
+            (ln_input_act): QuantAct(activation_bit=22, quant_mode: True, Act_min: -7.51, Act_max: 46.48)
+            (LayerNorm): IntLayerNorm(
+              (activation): QuantAct(activation_bit=32, quant_mode: True, Act_min: -0.00, Act_max: 0.00)
+            )
+            (output_activation): QuantAct(activation_bit=8, quant_mode: True, Act_min: -3.26, Act_max: 7.72)
+            (dropout): Dropout(p=0.1, inplace=False)
+          )
+          (pre_intermediate_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -5.44, Act_max: 46.52)
+          (pre_output_act): QuantAct(activation_bit=8, quant_mode: True, Act_min: -0.18, Act_max: 5.52)
+        )
+      )
+    )
+    (pooler): BertPooler(
+      (dense): Linear(in_features=1024, out_features=1024, bias=True)
+      (activation): Tanh()
+    )
+  )
+  (dropout): Dropout(p=0.1, inplace=False)
+  (classifier): Linear(in_features=1024, out_features=2, bias=True)
+)
+start time: 2024_07_06_08_31_08
+===================== testing phase =====================
+Test result: Acc: 90.3670% F1 score: 0.905830
+finish time: 2024_07_06_08_31_48
