@@ -180,7 +180,15 @@ If you use this github repository, please cite our paper:
 <u>*Cong Wang, Zeming Chen, Shanshi Huang*</u>
 
 ```tex
-This is intentionally left blank now.
+@misc{wang2024micsimmodularsimulatormixedsignal,
+      title={MICSim: A Modular Simulator for Mixed-signal Compute-in-Memory based AI Accelerator}, 
+      author={Cong Wang and Zeming Chen and Shanshi Huang},
+      year={2024},
+      eprint={2409.14838},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2409.14838}, 
+}
 ```
 
 
