@@ -20,7 +20,7 @@
 
 ## Overview
 
-This is the code of the paper:  **MICSim: A Modular Simulator for Mixed-signal Compute-in-Memory based AI Accelerator**, [30th Asia and South Pacific Design Automation Conference(**ASP-DAC**)](https://www.aspdac.com/aspdac2025/index.html), 2025.
+This is the code of the paper:  **MICSim: A Modular Simulator for Mixed-signal Compute-in-Memory based AI Accelerator**, [30th Asia and South Pacific Design Automation Conference(**ASP-DAC**)](https://www.aspdac.com/aspdac2025/index.html), 2025. [arxiv link](https://arxiv.org/abs/2409.14838)
 
 MICSim is an open-source pre-circuit simulator designed to assist circuit designers evaluate early-stage chip-level software performance and hardware overhead of mixed-signal compute-in-memory(CIM) accelerators.
 
