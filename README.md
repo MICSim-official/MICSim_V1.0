@@ -33,7 +33,7 @@ The development and testing environment for this project is based on **Linux Ubu
 #### 1. Get the tool from GitHub
 
 ```bash
-$ git clone git@github.com:wangc0812/CIMSim_V1.0.git
+$ git clone git@github.com:MICSim-official/MICSim_V1.0.gi
 $ cd CIMSim_V1.0
 ```
 
