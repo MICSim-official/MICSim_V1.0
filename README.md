@@ -180,14 +180,16 @@ If you use this github repository, please cite our paper:
 <u>*Cong Wang, Zeming Chen, Shanshi Huang*</u>
 
 ```tex
-@misc{wang2024micsimmodularsimulatormixedsignal,
-      title={MICSim: A Modular Simulator for Mixed-signal Compute-in-Memory based AI Accelerator}, 
-      author={Cong Wang and Zeming Chen and Shanshi Huang},
-      year={2024},
-      eprint={2409.14838},
-      archivePrefix={arXiv},
-      primaryClass={cs.AI},
-      url={https://arxiv.org/abs/2409.14838}, 
+@inproceedings{micsim,
+  title={MICSim: A Modular Simulator for Mixed-signal Compute-in-Memory based AI Accelerator},
+  author={Wang, Cong and Chen, Zeming and Huang,Shanshi },
+  booktitle={Proceedings of the 30th Asia and South Pacific Design Automation Conference},
+  series = {ASPDAC '25},
+  url = {https://doi.org/10.1145/3658617.3697630},
+  doi = {10.1145/3658617.3697630},
+  pages={541--547},
+  location = {Tokyo, Japan},
+  year={2025}
 }
 ```
 
