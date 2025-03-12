@@ -276,7 +276,8 @@ def Conv_(input, inputshift, weight, weightshift, stride, padding, name = None,d
                                     d3_array = np.append(d3_array, d3[0::200])   
                                     # d3_array = np.append(d3_array, d3)    
                                                                         
-
+                        partial_output_b_sum = testadc.ADC_compute(partial_output_b_sum)
+                        
                         if not skip_ref1:
                             dummy_partial_output_b_sum1 = testadc.ADC_compute(dummy_partial_output_b_sum1) 
                             partial_output_b_sum += dummy_partial_output_b_sum1*inputshift_sign
