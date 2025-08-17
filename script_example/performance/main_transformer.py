@@ -17,9 +17,7 @@ for i in range(12):
         [batch_size, hidden_size, attention_head_size, sequence_length, num_attention_heads, average_file_path + f'BertLayer_{i}_selfattention_weight_value_layer.csv', average_file_path + f'BertLayer_{i}_selfattention_weight_value_layerweight_shift.csv','linearWV', 'FC'],
         [batch_size, hidden_size, attention_head_size, sequence_length, num_attention_heads, average_file_path + f'BertLayer_{i}_selfattention_MatmulKQ.csv', None,'MatmulKQ', 'MatmulKQ'],
         [batch_size, hidden_size, attention_head_size, sequence_length, num_attention_heads, average_file_path + f'BertLayer_{i}_selfattention_MatmulPV.csv', None, 'MatmulPV', 'MatmulPV'],
-        [batch_size, hidden_size, attention_head_size, sequence_length, num_attention_heads, average_file_path + f'BertLayer_{i}_selfoutput_layer.csv',average_file_path + f'BertLayer_{i}_selfoutput_layerweight_shift.csv', 'selfoutput', 'FC'],
-        [batch_size, hidden_size, attention_head_size, sequence_length, num_attention_heads, average_file_path + f'BertLayer_{i}_intermediate_layer.csv',average_file_path + f'BertLayer_{i}_intermediate_layerweight_shift.csv', 'intermediate', 'FC'],
-        [batch_size, hidden_size, attention_head_size, sequence_length, num_attention_heads, average_file_path + f'BertLayer_{i}_output_layer.csv',average_file_path + f'BertLayer_{i}_output_layerweight_shift.csv', 'output', 'FC']
+        [batch_size, hidden_size, attention_head_size, sequence_length, num_attention_heads, average_file_path + f'BertLayer_{i}_selfoutput_layer.csv',average_file_path + f'BertLayer_{i}_selfoutput_layerweight_shift.csv', 'selfoutput', 'FC']
     ]
     Bert.append(BertLayer)
 
